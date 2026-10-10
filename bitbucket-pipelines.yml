@@ -13,6 +13,12 @@ definitions:
 pipelines:
   default:
     - step:
+        name: Mirror to GitHub
+        script:
+          # Needs repository variable GITHUB_MIRROR_URL (git@github.com:you/repo.git)
+          # and an SSH deploy key with write access registered under Pipelines > SSH keys.
+          - git push --mirror "$GITHUB_MIRROR_URL"
+    - step:
         name: Check (cs, stan, phpunit)
         caches: [composer]
         services: [database]
@@ -20,29 +26,8 @@ pipelines:
           - apt-get update && apt-get install -y git unzip libzip-dev && docker-php-ext-install pdo_mysql
           - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
           - composer install --no-interaction --prefer-dist
-          - vendor/bin/php-cs-fixer fix --dry-run --diff
-          - vendor/bin/phpstan analyse --memory-limit=512M
+          - composer cs
+          - composer stan
           - export DB_HOST=127.0.0.1 DB_USER=root DB_PASS=root DB_NAME=db_test DB_TEST_NAME=db_test
           - vendor/bin/phinx migrate -e testing
-          - vendor/bin/phpunit
-  branches:
-    main:
-      - step:
-          name: Check (cs, stan, phpunit)
-          caches: [composer]
-          services: [database]
-          script:
-            - apt-get update && apt-get install -y git unzip libzip-dev && docker-php-ext-install pdo_mysql
-            - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-            - composer install --no-interaction --prefer-dist
-            - vendor/bin/php-cs-fixer fix --dry-run --diff
-            - vendor/bin/phpstan analyse --memory-limit=512M
-            - export DB_HOST=127.0.0.1 DB_USER=root DB_PASS=root DB_NAME=db_test DB_TEST_NAME=db_test
-            - vendor/bin/phinx migrate -e testing
-            - vendor/bin/phpunit
-      - step:
-          name: Mirror to GitHub
-          script:
-            # Needs repository variable GITHUB_MIRROR_URL (git@github.com:you/repo.git)
-            # and an SSH deploy key with write access registered under Pipelines > SSH keys.
-            - git push --mirror "$GITHUB_MIRROR_URL"
+          - composer test
