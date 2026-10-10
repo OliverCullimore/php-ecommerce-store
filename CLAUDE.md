@@ -4,7 +4,7 @@ Guidance for Claude Code when working in this repository.
 
 ## Project
 
-Filament & Print Shop Manager — a PHP web app for running a small
+PHP E-Commerce Store — a PHP web app for running a small
 manufacturing/selling business (stock, production, purchasing, sales
 orders, payments, invoicing) plus a public storefront. Built as a
 learning vehicle for modern PHP practices, in deliberate contrast to a

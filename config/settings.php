@@ -29,7 +29,7 @@ return [
         ],
     ],
     'shop' => [
-        'name' => $env('SHOP_NAME', 'Filament & Print Shop'),
+        'name' => $env('SHOP_NAME', 'PHP E-Commerce Store'),
         'address' => $env('SHOP_ADDRESS', ''),
     ],
 ];

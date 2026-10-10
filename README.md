@@ -1,4 +1,4 @@
-# Filament & Print Shop Manager
+# PHP E-Commerce Store
 
 PHP 8.5 / Slim 4 app for a small maker business: items, variants and a multi-level BOM, an append-only FIFO stock ledger, purchasing, production, sales orders with per-line despatch/cancel/return, payments and manual refunds, on-demand PDF invoices, and a public storefront. Spec: `docs/spec.md`. Build order: `docs/build-plan.md`. Project rules: `CLAUDE.md`.
 

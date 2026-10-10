@@ -1,4 +1,4 @@
-# Filament & Print Shop Manager — Definitive Spec
+# PHP E-Commerce Store — Definitive Spec
 
 ## 1. Purpose
 
