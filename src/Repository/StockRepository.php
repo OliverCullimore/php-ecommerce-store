@@ -95,8 +95,15 @@ final class StockRepository extends Repository
     public function overview(): array
     {
         return $this->rows($this->qb()
-            ->select('v.id', 'v.sku', 'v.name', 'v.unit', 'v.reorder_threshold', 'i.name AS item_name',
-                "COALESCE(SUM(CASE WHEN s.entry_type = 'consumption' THEN -s.quantity ELSE s.quantity END), 0) AS balance")
+            ->select(
+                'v.id',
+                'v.sku',
+                'v.name',
+                'v.unit',
+                'v.reorder_threshold',
+                'i.name AS item_name',
+                "COALESCE(SUM(CASE WHEN s.entry_type = 'consumption' THEN -s.quantity ELSE s.quantity END), 0) AS balance"
+            )
             ->from('item_variants', 'v')->join('v', 'items', 'i', 'i.id = v.item_id')->leftJoin('v', 'stock', 's', 's.item_variant_id = v.id')
             ->where("v.status = 'active'")->groupBy('v.id', 'v.sku', 'v.name', 'v.unit', 'v.reorder_threshold', 'i.name')->orderBy('i.name')->addOrderBy('v.name'));
     }

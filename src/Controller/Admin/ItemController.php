@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Domain\Catalog\CategoryTreeBuilder;
 use App\Repository\CategoryRepository;
 use App\Repository\ItemRepository;
-use App\Domain\Catalog\CategoryTreeBuilder;
 use App\Repository\VariantRepository;
 use App\Support\Flash;
 use App\Support\Input;

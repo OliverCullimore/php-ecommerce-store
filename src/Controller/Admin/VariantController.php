@@ -8,7 +8,6 @@ use App\Domain\Item\BomService;
 use App\Domain\Item\LowStockEvaluator;
 use App\Repository\AttributeRepository;
 use App\Repository\BomRepository;
-use App\Repository\ItemRepository;
 use App\Repository\ResourceRepository;
 use App\Repository\StockRepository;
 use App\Repository\SupplierRepository;
