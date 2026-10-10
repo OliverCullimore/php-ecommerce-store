@@ -1,6 +1,6 @@
 {
-    "name": "ollie/filament-shop-manager",
-    "description": "Filament & Print Shop Manager: stock, BOM, purchasing, sales, invoicing and a public storefront.",
+    "name": "olivercullimore/php-ecommerce-store",
+    "description": "Shop Manager: stock, BOM, purchasing, sales, invoicing and a public storefront.",
     "type": "project",
     "license": "proprietary",
     "require": {

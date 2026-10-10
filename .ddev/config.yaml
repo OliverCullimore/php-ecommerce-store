@@ -1,4 +1,4 @@
-name: filament-shop
+name: 3d-print-shop
 type: php
 docroot: public
 php_version: "8.5"
