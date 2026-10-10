@@ -19,7 +19,7 @@ final class CreateSales extends AbstractMigration
             ->create();
 
         $this->table('sales_orders')
-            ->addColumn('customer_id', 'integer')
+            ->addColumn('customer_id', 'integer', ['signed' => false])
             ->addColumn('order_date', 'datetime', ['default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('channel', 'string', ['limit' => 16])
             ->addColumn('status', 'string', ['limit' => 24, 'default' => 'draft'])
@@ -30,8 +30,8 @@ final class CreateSales extends AbstractMigration
             ->create();
 
         $this->table('sales_order_items')
-            ->addColumn('sales_order_id', 'integer')
-            ->addColumn('item_variant_id', 'integer')
+            ->addColumn('sales_order_id', 'integer', ['signed' => false])
+            ->addColumn('item_variant_id', 'integer', ['signed' => false])
             ->addColumn('quantity', 'decimal', ['precision' => 12, 'scale' => 4])
             ->addColumn('unit_price', 'decimal', ['precision' => 10, 'scale' => 2])
             ->addColumn('cost_price', 'decimal', ['precision' => 12, 'scale' => 4, 'null' => true])

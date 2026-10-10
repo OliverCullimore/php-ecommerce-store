@@ -14,8 +14,8 @@ final class CreatePurchasing extends AbstractMigration
             ->create();
 
         $this->table('item_variant_suppliers')
-            ->addColumn('item_variant_id', 'integer')
-            ->addColumn('supplier_id', 'integer')
+            ->addColumn('item_variant_id', 'integer', ['signed' => false])
+            ->addColumn('supplier_id', 'integer', ['signed' => false])
             ->addColumn('is_default', 'boolean', ['default' => false])
             ->addColumn('supplier_sku', 'string', ['limit' => 120, 'null' => true])
             ->addColumn('notes', 'text', ['null' => true])
@@ -25,7 +25,7 @@ final class CreatePurchasing extends AbstractMigration
             ->create();
 
         $this->table('purchase_orders')
-            ->addColumn('supplier_id', 'integer')
+            ->addColumn('supplier_id', 'integer', ['signed' => false])
             ->addColumn('order_date', 'date')
             ->addColumn('status', 'string', ['limit' => 16, 'default' => 'draft'])
             ->addColumn('notes', 'text', ['null' => true])
@@ -33,9 +33,9 @@ final class CreatePurchasing extends AbstractMigration
             ->create();
 
         $this->table('purchase_order_items')
-            ->addColumn('purchase_order_id', 'integer')
-            ->addColumn('item_variant_id', 'integer', ['null' => true])
-            ->addColumn('resource_id', 'integer', ['null' => true])
+            ->addColumn('purchase_order_id', 'integer', ['signed' => false])
+            ->addColumn('item_variant_id', 'integer', ['null' => true, 'signed' => false])
+            ->addColumn('resource_id', 'integer', ['null' => true, 'signed' => false])
             ->addColumn('quantity', 'decimal', ['precision' => 12, 'scale' => 4])
             ->addColumn('unit_cost', 'decimal', ['precision' => 12, 'scale' => 4])
             ->addColumn('received_at', 'datetime', ['null' => true])

@@ -16,7 +16,7 @@ final class CreateItemsVariantsBom extends AbstractMigration
             ->create();
 
         $this->table('item_variants')
-            ->addColumn('item_id', 'integer')
+            ->addColumn('item_id', 'integer', ['signed' => false])
             ->addColumn('sku', 'string', ['limit' => 64])
             ->addColumn('name', 'string', ['limit' => 190])
             ->addColumn('unit', 'string', ['limit' => 16, 'default' => 'each'])
@@ -40,10 +40,10 @@ final class CreateItemsVariantsBom extends AbstractMigration
             ->create();
 
         $this->table('variant_bom_lines')
-            ->addColumn('variant_id', 'integer')
+            ->addColumn('variant_id', 'integer', ['signed' => false])
             ->addColumn('line_type', 'string', ['limit' => 16])
-            ->addColumn('component_variant_id', 'integer', ['null' => true])
-            ->addColumn('resource_id', 'integer', ['null' => true])
+            ->addColumn('component_variant_id', 'integer', ['null' => true, 'signed' => false])
+            ->addColumn('resource_id', 'integer', ['null' => true, 'signed' => false])
             ->addColumn('quantity', 'decimal', ['precision' => 12, 'scale' => 4, 'null' => true])
             ->addColumn('hours_used', 'decimal', ['precision' => 10, 'scale' => 4, 'null' => true])
             ->addColumn('notes', 'text', ['null' => true])
