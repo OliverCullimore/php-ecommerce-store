@@ -9,19 +9,8 @@ definitions:
       variables:
         MARIADB_DATABASE: db_test
         MARIADB_ROOT_PASSWORD: root
-
-pipelines:
-  default:
-    - step:
-        name: Mirror to GitHub
-        image: alpine/git:latest
-        clone:
-          depth: full
-        script:
-          # Needs repository variable GITHUB_MIRROR_URL (git@github.com:you/repo.git)
-          # and an SSH deploy key with write access registered under Pipelines > SSH keys.
-          - git push --mirror "$GITHUB_MIRROR_URL"
-    - step:
+  steps:
+    - step: &check
         name: Check (cs, stan, phpunit)
         caches: [composer]
         services: [database]
@@ -34,3 +23,19 @@ pipelines:
           - export DB_HOST=127.0.0.1 DB_USER=root DB_PASS=root DB_NAME=db_test DB_TEST_NAME=db_test
           - vendor/bin/phinx migrate -e testing
           - composer test
+
+pipelines:
+  default:
+    - step: *check
+  branches:
+    main:
+      - step:
+          name: Mirror to GitHub
+          image: alpine/git:latest
+          clone:
+            depth: full
+          script:
+            # Needs repository variable GITHUB_MIRROR_URL (git@github.com:you/repo.git)
+            # and an SSH deploy key with write access registered under Pipelines > SSH keys.
+            - git push --mirror "$GITHUB_MIRROR_URL"
+      - step: *check
