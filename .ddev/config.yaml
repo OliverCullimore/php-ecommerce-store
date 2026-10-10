@@ -1,0 +1,8 @@
+name: filament-shop
+type: php
+docroot: public
+php_version: "8.5"
+webserver_type: apache-fpm
+database:
+  type: mariadb
+  version: "10.6"

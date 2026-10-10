@@ -1,0 +1,16 @@
+{% extends 'storefront/single.twig' %}
+{% block title %}Order {{ order.id }}{% endblock %}
+{% block content %}
+{% if paid %}
+<h1>Thank you</h1>
+<p>Order <strong>{{ order.id }}</strong> is paid ({{ total_pence|money }}). We'll be in touch when it's on its way.</p>
+{% if offer_password %}
+<h2>Save your details for next time?</h2>
+<form method="post" action="/account/password">{{ csrf_field() }}<label>Choose a password (10+ characters)</label><input type="password" name="password" minlength="10" required><p><button>Create account</button></p></form>
+{% endif %}
+{% elseif failed %}
+<h1>Payment didn't go through</h1><p>Your card was declined or an error occurred. Nothing was charged. <a href="/cart">Back to your basket</a> to try again.</p>
+{% else %}
+<h1>Waiting for confirmation</h1><p>We haven't had confirmation of your payment yet. Refresh this page in a moment.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends 'admin/layout.twig' %}
+{% block body %}
+<h1>Items <a class="btn" href="/admin/items/new" style="font-size:.9rem">New item</a></h1>
+<table><tr><th>Name</th><th class="n">Variants</th><th>Active</th></tr>
+{% for i in items %}<tr><td><a href="/admin/items/{{ i.id }}">{{ i.name }}</a></td><td class="n">{{ i.variant_count }}</td><td>{{ i.active ? 'Yes' : 'No' }}</td></tr>
+{% else %}<tr><td colspan="3" class="mut">No items yet.</td></tr>{% endfor %}
+</table>
+{% endblock %}

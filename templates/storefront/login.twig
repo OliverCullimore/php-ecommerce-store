@@ -1,0 +1,6 @@
+{% extends 'storefront/single.twig' %}
+{% block title %}Sign in{% endblock %}
+{% block content %}
+<h1>Sign in</h1>
+<form method="post" action="/account/login">{{ csrf_field() }}<label>Email</label><input type="email" name="email" required style="width:100%"><label>Password</label><input type="password" name="password" required style="width:100%"><p><button>Sign in</button></p></form>
+{% endblock %}

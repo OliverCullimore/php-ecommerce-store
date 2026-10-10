@@ -1,0 +1,38 @@
+{% macro nav(nodes) %}{% import _self as m %}
+<ul>{% for n in nodes %}<li><a href="/category/{{ n.category.slug }}">{{ n.category.name }}</a>{% if n.children %}{{ m.nav(n.children) }}{% endif %}</li>{% endfor %}</ul>
+{% endmacro %}
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Shop{% endblock %} · {{ shop_name }}</title>
+<style>
+:root{--fg:#1f1f1c;--mut:#6f6f68;--line:#e3e3dc;--acc:#c2410c;--bg:#fbfbf8}
+*{box-sizing:border-box}body{margin:0;font:16px/1.5 system-ui,sans-serif;color:var(--fg);background:var(--bg)}
+header{display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;align-items:center;padding:.8rem 1.2rem;border-bottom:1px solid var(--line);background:#fff}
+header a{color:var(--fg);text-decoration:none}header .brand{font-weight:700;font-size:1.2rem}header .sp{flex:1}
+.wrap{max-width:1100px;margin:0 auto;padding:1rem 1.2rem;display:grid;grid-template-columns:200px 1fr;gap:2rem}.wrap.single{display:block;max-width:760px}
+aside ul{list-style:none;margin:0;padding-left:.9rem}aside>ul{padding:0}aside a{color:var(--fg);text-decoration:none;display:block;padding:.15rem 0}aside a:hover{color:var(--acc)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:1rem}.tile{background:#fff;border:1px solid var(--line);border-radius:8px;padding:1rem;text-decoration:none;color:inherit;display:block}.tile:hover{border-color:var(--acc)}
+.price{color:var(--acc);font-weight:600}.mut{color:var(--mut)}
+input,select,textarea{font:inherit;padding:.5rem;border:1px solid var(--line);border-radius:6px;max-width:100%}label{display:block;margin:.7rem 0 .2rem;font-size:.9rem;color:var(--mut)}
+button,.btn{font:inherit;padding:.55rem 1.1rem;background:var(--acc);color:#fff;border:0;border-radius:6px;cursor:pointer;text-decoration:none;display:inline-block}button.sec{background:#fff;color:var(--acc);border:1px solid var(--acc)}
+table{width:100%;border-collapse:collapse}td,th{padding:.5rem;border-bottom:1px solid var(--line);text-align:left}td.n,th.n{text-align:right}
+.flash{padding:.7rem 1rem;border-radius:6px;margin:.8rem 0}.flash.success{background:#e5f4ea;color:#1e6b3a}.flash.error{background:#fbe6e1;color:#9b2c16}
+.filters select{margin-right:.5rem}.crumbs{color:var(--mut);font-size:.9rem}
+@media(max-width:760px){.wrap{display:block}}
+</style>
+</head>
+<body>
+<header><a class="brand" href="/">{{ shop_name }}</a><span class="sp"></span>
+{% if customer_name %}<a href="/account">{{ customer_name }}</a><form method="post" action="/account/logout" style="display:inline">{{ csrf_field() }}<button class="sec" style="padding:.2rem .6rem">Sign out</button></form>{% else %}<a href="/account/login">Sign in</a>{% endif %}
+<a href="/cart">Basket ({{ cart_count }})</a></header>
+{% block outer %}
+<div class="wrap">
+<aside>{% if nav is defined %}{{ _self.nav(nav) }}{% endif %}</aside>
+<main>{% for f in flash %}<div class="flash {{ f.type }}">{{ f.text }}</div>{% endfor %}{% block body %}{% endblock %}</main>
+</div>
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,15 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+body{font-family:DejaVu Sans,Helvetica,sans-serif;font-size:11px;color:#222}h1{font-size:22px;margin:0}
+table{width:100%;border-collapse:collapse}th{background:#eee;text-align:left;padding:5px;font-size:10px}td{padding:5px;border-bottom:1px solid #ddd}
+.r{text-align:right}.mut{color:#666}.box{margin-top:18px}
+</style></head><body>
+<table><tr><td><h1>INVOICE</h1><div class="mut">No. {{ invoice_number }} · {{ issued }}</div></td>
+<td class="r"><strong>{{ shop_name }}</strong><br>{{ shop_address|nl2br }}</td></tr></table>
+<div class="box"><strong>Bill to</strong><br>{{ customer.name }}<br>{{ (customer.address ?? '')|nl2br }}<br>{{ customer.email }}</div>
+<div class="box"><table><tr><th>Description</th><th class="r">Qty</th><th class="r">Unit price</th><th class="r">Amount</th></tr>
+{% for l in lines %}<tr><td>{{ l.label }}{% if l.line_status == 'returned' %} <span class="mut">(returned)</span>{% endif %}</td><td class="r">{{ l.quantity|qty }}</td><td class="r">{{ l.unit_price|gbp }}</td><td class="r">{{ l.line_pence|money }}</td></tr>{% endfor %}
+<tr><td colspan="3" class="r"><strong>Total</strong></td><td class="r"><strong>{{ total_pence|money }}</strong></td></tr>
+<tr><td colspan="3" class="r">Paid (net of refunds)</td><td class="r">{{ paid_pence|money }}</td></tr></table></div>
+{% if payments %}<div class="box mut">Payments: {% for p in payments %}{{ p.gateway }} {{ p.amountPence|money }}{{ not loop.last ? ', ' }}{% endfor %}</div>{% endif %}
+</body></html>

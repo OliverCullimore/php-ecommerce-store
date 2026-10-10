@@ -1,0 +1,9 @@
+{% extends 'admin/layout.twig' %}
+{% block body %}
+<h1>New manual order</h1>
+<form method="post" action="/admin/orders" class="card">{{ csrf_field() }}
+<label>Existing customer</label><select name="customer_id"><option value="">New customer…</option>{% for c in customers %}<option value="{{ c.id }}">{{ c.name }} ({{ c.email }})</option>{% endfor %}</select>
+<div class="row"><div><label>Name</label><input name="name"></div><div><label>Email</label><input name="email" type="email"></div><div><label>Phone</label><input name="phone"></div></div>
+<label>Address</label><textarea name="address" rows="3" style="width:100%"></textarea>
+<label>Order notes</label><input name="notes" style="width:100%"><p><button>Create order</button></p></form>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'admin/layout.twig' %}
+{% block body %}
+<h1>Ledger: {{ v.item_name }} / {{ v.name }}</h1>
+<p>On hand: <strong>{{ balance|qty }} {{ v.unit }}</strong> <span class="mut">(additions minus consumption; rows are never edited)</span></p>
+<table><tr><th>#</th><th>When</th><th>Type</th><th class="n">Qty</th><th class="n">Unit cost</th><th>From lot</th><th>Linked</th></tr>
+{% for e in entries %}<tr><td>{{ e.id }}</td><td>{{ e.occurred_at }}</td><td>{{ e.entry_type|replace({'_':' '}) }}</td>
+<td class="n">{{ e.entry_type == 'consumption' ? '−' : '+' }}{{ e.quantity|qty }}</td><td class="n">{{ e.cost is null ? '' : e.cost|gbp }}</td><td>{{ e.source_stock_id ? '#' ~ e.source_stock_id }}</td>
+<td>{% if e.purchase_order_item_id %}PO line {{ e.purchase_order_item_id }}{% endif %}{% if e.production_batch_id %}batch {{ e.production_batch_id }}{% endif %}{% if e.sales_order_item_id %}order line {{ e.sales_order_item_id }}{% endif %}</td></tr>
+{% else %}<tr><td colspan="7" class="mut">No movements.</td></tr>{% endfor %}</table>
+{% endblock %}

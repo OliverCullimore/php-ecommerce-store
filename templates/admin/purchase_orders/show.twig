@@ -1,0 +1,21 @@
+{% extends 'admin/layout.twig' %}
+{% block body %}
+<h1>PO-{{ po.id }} <span class="badge">{{ po.status.value }}</span></h1>
+<p class="mut">{{ supplier.name }} · {{ po.orderDate }}</p>
+<table><tr><th>Line</th><th class="n">Qty</th><th class="n">Unit cost</th><th class="n">Total</th><th>Received</th><th></th></tr>
+{% for i in items %}<tr><td>{{ i.label }}{% if i.resource_id %} <span class="mut">(asset)</span>{% endif %}</td><td class="n">{{ i.quantity|qty }}</td><td class="n">{{ i.unit_cost|gbp }}</td><td class="n">{{ (i.quantity * i.unit_cost)|gbp }}</td><td>{{ i.received_at ?: '' }}</td>
+<td class="n">{% if po.status.value == 'draft' %}<form method="post" action="/admin/purchase-orders/{{ po.id }}/items/{{ i.id }}/delete" class="inline">{{ csrf_field() }}<button class="danger">Remove</button></form>
+{% elseif po.status.value == 'ordered' and not i.received_at %}<form method="post" action="/admin/purchase-orders/{{ po.id }}/receive/{{ i.id }}" class="inline">{{ csrf_field() }}<button>Receive</button></form>{% endif %}</td></tr>
+{% else %}<tr><td colspan="6" class="mut">No lines.</td></tr>{% endfor %}</table>
+{% if po.status.value == 'draft' %}
+<form method="post" action="/admin/purchase-orders/{{ po.id }}/items" class="card row">{{ csrf_field() }}
+<div><label>Variant</label><select name="variant_id"><option value="">Choose…</option>{% for o in variant_options %}<option value="{{ o.id }}" {{ preselect_variant == o.id ? 'selected' }}>{{ o.label }} ({{ o.sku }})</option>{% endfor %}</select></div>
+<div><label>Qty</label><input name="quantity" type="number" step="any" min="0.0001" size="8" style="width:7rem"></div>
+<div><label>Unit cost (GBP)</label><input name="unit_cost" type="number" step="0.0001" min="0" required style="width:8rem"></div><button>Add variant line</button></form>
+{% if resource_options %}<form method="post" action="/admin/purchase-orders/{{ po.id }}/items" class="card row">{{ csrf_field() }}
+<div><label>Asset resource (status: on order)</label><select name="resource_id">{% for r in resource_options %}<option value="{{ r.id }}">{{ r.name }}</option>{% endfor %}</select></div>
+<div><label>Cost (GBP)</label><input name="unit_cost" type="number" step="0.01" min="0" required style="width:8rem"></div><button>Add asset line</button></form>{% endif %}
+<form method="post" action="/admin/purchase-orders/{{ po.id }}/order" class="inline">{{ csrf_field() }}<button>Place order</button></form>
+{% endif %}
+{% if po.status.value in ['draft','ordered'] %}<form method="post" action="/admin/purchase-orders/{{ po.id }}/cancel" class="inline">{{ csrf_field() }}<button class="danger">Cancel order</button></form>{% endif %}
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'admin/layout.twig' %}
+{% import _self as m %}
+{% macro tree(nodes, parent_id) %}
+{% import _self as m %}
+<ul class="tree" data-parent="{{ parent_id }}">
+{% for n in nodes %}
+<li draggable="true" data-id="{{ n.category.id }}">
+<div class="cat"><span class="handle" title="Drag to reorder">&#9776;</span>
+<form method="post" action="/admin/categories/{{ n.category.id }}" class="inline">{{ csrf_field() }}<input name="name" value="{{ n.category.name }}" size="18">
+<label class="inline" style="display:inline"><input type="checkbox" name="active" value="1" {{ n.category.active ? 'checked' }}> active</label> <button class="sec">Save</button></form>
+<span class="mut">/{{ n.category.slug }}</span>
+<form method="post" action="/admin/categories/{{ n.category.id }}/delete" class="inline">{{ csrf_field() }}<button class="danger">Delete</button></form></div>
+{% if n.children %}{{ m.tree(n.children, n.category.id) }}{% endif %}
+</li>
+{% endfor %}
+</ul>
+{% endmacro %}
+{% block body %}
+<h1>Categories</h1>
+<p class="mut">Drag rows to reorder siblings; the storefront navigation uses this order.</p>
+{% if nodes %}{{ m.tree(nodes, '') }}{% else %}<p class="mut">No categories yet.</p>{% endif %}
+
+<h2>Move a category</h2>
+<form method="post" class="card row" onsubmit="this.action='/admin/categories/'+this.elements.id.value">{{ csrf_field() }}<input type="hidden" name="action" value="move">
+<div><label>Category</label><select name="id">{% for f in flat %}<option value="{{ f.category.id }}">{{ '— '|repeat(f.depth) }}{{ f.category.name }}</option>{% endfor %}</select></div>
+<div><label>New parent</label><select name="parent_id"><option value="0">(top level)</option>{% for f in flat %}<option value="{{ f.category.id }}">{{ '— '|repeat(f.depth) }}{{ f.category.name }}</option>{% endfor %}</select></div>
+<button>Move</button></form>
+
+<h2>Add category</h2>
+<form method="post" action="/admin/categories" class="card row">{{ csrf_field() }}
+<div><label>Name</label><input name="name" required></div>
+<div><label>Parent</label><select name="parent_id"><option value="0">(top level)</option>{% for f in flat %}<option value="{{ f.category.id }}">{{ '— '|repeat(f.depth) }}{{ f.category.name }}</option>{% endfor %}</select></div>
+<button>Add</button></form>
+
+<script>
+(function () {
+  var token = document.querySelector('meta[name=csrf]').content, dragged = null;
+  document.querySelectorAll('ul.tree li[draggable]').forEach(function (li) {
+    li.addEventListener('dragstart', function (e) { e.stopPropagation(); dragged = li; li.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', li.dataset.id); });
+    li.addEventListener('dragend', function () { li.classList.remove('dragging'); dragged = null; });
+    li.addEventListener('dragover', function (e) {
+      if (!dragged || dragged === li || dragged.parentNode !== li.parentNode) return;
+      e.preventDefault(); e.stopPropagation();
+      var r = li.getBoundingClientRect(), after = (e.clientY - r.top) > r.height / 2;
+      li.parentNode.insertBefore(dragged, after ? li.nextSibling : li);
+    });
+    li.addEventListener('drop', function (e) {
+      e.preventDefault(); e.stopPropagation();
+      var ul = li.parentNode;
+      var ids = Array.prototype.map.call(ul.children, function (c) { return parseInt(c.dataset.id, 10); });
+      fetch('/admin/categories/reorder', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': token },
+        body: JSON.stringify({ parent_id: parseInt(ul.dataset.parent || '0', 10), ids: ids }) })
+        .then(function (r) { if (!r.ok) { r.json().then(function (j) { alert(j.error || 'Reorder failed'); location.reload(); }); } });
+    });
+  });
+})();
+</script>
+{% endblock %}

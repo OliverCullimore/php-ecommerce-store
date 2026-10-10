@@ -1,0 +1,9 @@
+{% extends 'storefront/single.twig' %}
+{% block title %}Checkout{% endblock %}
+{% block content %}
+<h1>Checkout</h1>
+<form method="post" action="/checkout/email">{{ csrf_field() }}
+<label>Email address</label><input type="email" name="email" value="{{ email }}" required autofocus style="width:100%">
+<p><button>Continue</button></p></form>
+<p class="mut">No account needed. Already registered? <a href="/account/login">Sign in</a>.</p>
+{% endblock %}

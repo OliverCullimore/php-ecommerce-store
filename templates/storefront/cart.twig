@@ -1,0 +1,13 @@
+{% extends 'storefront/single.twig' %}
+{% block title %}Basket{% endblock %}
+{% block content %}
+<h1>Your basket</h1>
+{% if lines %}
+<form method="post" action="/cart/update">{{ csrf_field() }}
+<table><tr><th>Item</th><th class="n">Price</th><th class="n">Qty</th><th class="n">Total</th></tr>
+{% for l in lines %}<tr><td><a href="/product/{{ l.variant.item_id }}">{{ l.variant.item_name }}</a> <span class="mut">{{ l.variant.name }}</span></td><td class="n">{{ l.variant.sale_price|gbp }}</td>
+<td class="n"><input type="number" name="qty[{{ l.variant.id }}]" value="{{ l.qty|qty }}" min="0" max="99" style="width:4.5rem"></td><td class="n">{{ l.line_pence|money }}</td></tr>{% endfor %}
+<tr><th colspan="3" class="n">Total</th><th class="n">{{ total_pence|money }}</th></tr></table>
+<p><button class="sec">Update basket</button> <a class="btn" href="/checkout">Checkout</a></p></form>
+{% else %}<p class="mut">Your basket is empty. <a href="/">Keep browsing</a>.</p>{% endif %}
+{% endblock %}

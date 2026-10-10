@@ -1,0 +1,53 @@
+{% extends 'admin/layout.twig' %}
+{% block body %}
+{% set vid = v.id %}
+<h1>{{ v.item_name }} / {{ v.name }} <span class="badge">{{ manufactured ? 'manufactured' : 'purchased' }}</span></h1>
+<p class="mut"><a href="/admin/items/{{ v.item_id }}">&larr; {{ v.item_name }}</a> ·
+Stock: <strong>{{ stock|qty }} {{ v.unit }}</strong> {% if is_low %}<span class="badge low">low</span>{% endif %} · <a href="/admin/stock/{{ v.id }}">ledger</a>
+{% if not manufactured %} · <a href="/admin/purchase-orders/new?variant={{ v.id }}">Order more</a>{% endif %}</p>
+
+<form method="post" action="/admin/variants/{{ vid }}" class="card">{{ csrf_field() }}
+<div class="row">
+<div><label>SKU</label><input name="sku" value="{{ v.sku }}" required></div>
+<div><label>Name</label><input name="name" value="{{ v.name }}" required></div>
+<div><label>Unit</label><input name="unit" value="{{ v.unit }}" size="8"></div>
+<div><label>Reorder threshold</label><input name="reorder_threshold" type="number" step="any" min="0" value="{{ v.reorder_threshold|qty }}" size="8"></div>
+<div><label>Status</label><select name="status"><option value="active">active</option><option value="discontinued" {{ v.status == 'discontinued' ? 'selected' }}>discontinued</option></select></div>
+</div>
+<div class="row"><label><input type="checkbox" name="sellable" value="1" {{ v.sellable ? 'checked' }}> Sellable</label>
+<div><label>Sale price (GBP)</label><input name="sale_price" type="number" step="0.01" min="0" value="{{ v.sale_price }}"></div></div>
+{% if attributes %}<h3>Option choices</h3><div class="row">
+{% for a in attributes %}<div><label>{{ a.name }}</label><select name="attr[{{ a.id }}]"><option value="0">—</option>{% for val in a.values %}<option value="{{ val.id }}" {{ chosen[a.id]|default(0) == val.id ? 'selected' }}>{{ val.value }}</option>{% endfor %}</select></div>{% endfor %}</div>{% endif %}
+<label>Notes</label><textarea name="notes" rows="2" style="width:100%">{{ v.notes }}</textarea>
+<p><button>Save variant</button></p></form>
+
+<h2>Bill of materials</h2>
+{% if cost_error %}<div class="flash error">{{ cost_error }}</div>{% endif %}
+<table><tr><th>Component</th><th class="n">Quantity</th><th></th></tr>
+{% for l in component_lines %}<tr><td><a href="/admin/variants/{{ l.component_variant_id }}">{{ l.label }}</a></td><td class="n">{{ l.quantity|qty }} {{ l.unit }}</td>
+<td class="n"><form method="post" action="/admin/variants/{{ vid }}/bom/{{ l.id }}/delete" class="inline">{{ csrf_field() }}<button class="danger">Remove</button></form></td></tr>
+{% else %}<tr><td colspan="3" class="mut">No components: this variant is purchased.</td></tr>{% endfor %}</table>
+<form method="post" action="/admin/variants/{{ vid }}/bom/component" class="row card">{{ csrf_field() }}
+<div><label>Add component</label><select name="component_variant_id" required><option value="">Choose…</option>{% for o in component_options %}<option value="{{ o.id }}">{{ o.label }} ({{ o.sku }})</option>{% endfor %}</select></div>
+<div><label>Quantity</label><input name="quantity" type="number" step="any" min="0.0001" required size="8"></div><button>Add</button></form>
+
+<table><tr><th>Resource</th><th class="n">Hours (estimate)</th><th></th></tr>
+{% for l in resource_lines %}<tr><td>{{ l.name }} <span class="mut">({{ l.type }})</span></td><td class="n">{{ l.hours_used|qty }}</td>
+<td class="n"><form method="post" action="/admin/variants/{{ vid }}/bom/{{ l.id }}/delete" class="inline">{{ csrf_field() }}<button class="danger">Remove</button></form></td></tr>
+{% else %}<tr><td colspan="3" class="mut">No resource lines.</td></tr>{% endfor %}</table>
+<form method="post" action="/admin/variants/{{ vid }}/bom/resource" class="row card">{{ csrf_field() }}
+<div><label>Add resource</label><select name="resource_id" required><option value="">Choose…</option>{% for r in resource_options %}<option value="{{ r.id }}">{{ r.name }}</option>{% endfor %}</select></div>
+<div><label>Hours</label><input name="hours_used" type="number" step="any" min="0.0001" required size="8"></div><button>Add</button></form>
+<p><strong>Estimated cost per unit:</strong> {{ estimated_cost is null ? 'n/a' : estimated_cost|gbp }}
+<span class="mut">(purchased leaves use their latest receipt cost; sub-assemblies roll up recursively)</span></p>
+
+<h2>Suppliers</h2>
+<table><tr><th>Supplier</th><th>Their SKU</th><th>Default</th><th></th></tr>
+{% for s in supplier_links %}<tr><td>{{ s.supplier_name }}</td><td>{{ s.supplier_sku }}</td><td>{{ s.is_default ? 'Yes' : '' }}</td>
+<td class="n"><form method="post" action="/admin/variants/{{ vid }}/suppliers/{{ s.id }}/delete" class="inline">{{ csrf_field() }}<button class="danger">Unlink</button></form></td></tr>
+{% else %}<tr><td colspan="4" class="mut">No suppliers linked.</td></tr>{% endfor %}</table>
+<form method="post" action="/admin/variants/{{ vid }}/suppliers" class="row card">{{ csrf_field() }}
+<div><label>Supplier</label><select name="supplier_id">{% for s in supplier_options %}<option value="{{ s.id }}">{{ s.name }}</option>{% endfor %}</select></div>
+<div><label>Supplier SKU</label><input name="supplier_sku"></div>
+<label><input type="checkbox" name="is_default" value="1"> Default</label><button>Link</button></form>
+{% endblock %}

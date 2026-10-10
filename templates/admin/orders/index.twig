@@ -1,0 +1,8 @@
+{% extends 'admin/layout.twig' %}
+{% block body %}
+<h1>Sales orders <a class="btn" href="/admin/orders/new" style="font-size:.9rem">New manual order</a></h1>
+<form method="get" class="row"><div><label>Status</label><select name="status" onchange="this.form.submit()"><option value="">All</option>{% for s in statuses %}<option value="{{ s.value }}" {{ current == s.value ? 'selected' }}>{{ s.value|replace({'_':' '}) }}</option>{% endfor %}</select></div></form>
+<table><tr><th>#</th><th>Date</th><th>Customer</th><th>Channel</th><th>Status</th><th class="n">Total</th></tr>
+{% for o in orders %}<tr><td><a href="/admin/orders/{{ o.id }}">{{ o.id }}</a></td><td>{{ o.order_date }}</td><td>{{ o.customer_name }}</td><td>{{ o.channel }}</td><td><span class="badge">{{ o.status|replace({'_':' '}) }}</span></td><td class="n">{{ o.total|gbp }}</td></tr>
+{% else %}<tr><td colspan="6" class="mut">No orders.</td></tr>{% endfor %}</table>
+{% endblock %}

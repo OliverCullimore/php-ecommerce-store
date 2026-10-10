@@ -1,0 +1,13 @@
+{% extends 'admin/layout.twig' %}
+{% block body %}
+<h1>Manufacturing</h1>
+<p class="mut">Manufactured variants at or below their reorder threshold, or with more demand on paid orders than stock. Batches consume one BOM level; build short sub-assemblies first.</p>
+<table><tr><th>Variant</th><th class="n">Stock</th><th class="n">Reorder at</th><th class="n">Open demand</th><th>Short components</th><th>Make</th></tr>
+{% for c in candidates %}<tr><td><a href="/admin/variants/{{ c.id }}">{{ c.label }}</a></td><td class="n">{{ c.stock|qty }}</td><td class="n">{{ c.threshold|qty }}</td><td class="n">{{ c.demand|qty }}</td>
+<td>{% for s in c.shortages %}<span class="badge low">{{ s.label }}: short {{ s.missing|qty }}</span> <a href="/admin/variants/{{ s.variantId }}">view</a><br>{% else %}<span class="mut">none</span>{% endfor %}</td>
+<td><form method="post" action="/admin/manufacturing/produce" class="inline">{{ csrf_field() }}<input type="hidden" name="variant_id" value="{{ c.id }}"><input name="quantity" type="number" step="any" min="0.0001" value="{{ c.suggested|qty }}" style="width:5rem"> <button>Create batch</button></form></td></tr>
+{% else %}<tr><td colspan="6" class="mut">Nothing needs making.</td></tr>{% endfor %}</table>
+<h2>Recent batches</h2>
+<table><tr><th>#</th><th>When</th><th>Variant</th><th class="n">Qty</th></tr>
+{% for b in recent %}<tr><td>{{ b.id }}</td><td>{{ b.produced_at }}</td><td>{{ b.label }}</td><td class="n">{{ b.quantity_produced|qty }}</td></tr>{% else %}<tr><td colspan="4" class="mut">None yet.</td></tr>{% endfor %}</table>
+{% endblock %}

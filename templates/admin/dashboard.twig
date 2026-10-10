@@ -1,0 +1,13 @@
+{% extends 'admin/layout.twig' %}
+{% block body %}
+<h1>Dashboard</h1>
+<div class="row">
+{% for status, n in order_counts %}<a class="card" href="/admin/orders?status={{ status }}" style="text-decoration:none;color:inherit;min-width:180px"><div class="mut">{{ status|replace({'_':' '})|capitalize }}</div><div style="font-size:1.8rem">{{ n }}</div></a>{% endfor %}
+</div>
+<h2>Low stock</h2>
+{% if low_stock %}
+<table><tr><th>Item</th><th>SKU</th><th class="n">Stock</th><th class="n">Reorder at</th></tr>
+{% for r in low_stock %}<tr><td><a href="/admin/variants/{{ r.id }}">{{ r.item_name }} / {{ r.name }}</a></td><td>{{ r.sku }}</td><td class="n">{{ r.balance|qty }} {{ r.unit }}</td><td class="n">{{ r.reorder_threshold|qty }}</td></tr>{% endfor %}
+</table>
+{% else %}<p class="mut">Nothing at or below its reorder threshold.</p>{% endif %}
+{% endblock %}

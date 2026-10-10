@@ -1,0 +1,18 @@
+{% extends 'admin/layout.twig' %}
+{% block body %}
+<h1>{{ item ? item.name : 'New item' }}</h1>
+<form method="post" action="{{ item ? '/admin/items/' ~ item.id : '/admin/items' }}" class="card">{{ csrf_field() }}
+<label>Name</label><input name="name" value="{{ item ? item.name : '' }}" required style="width:100%">
+<label>Description</label><textarea name="description" rows="3" style="width:100%">{{ item ? item.description : '' }}</textarea>
+<label>Categories (shown as one tile per item on the storefront)</label>
+<select name="categories[]" multiple size="6">{% for c in categories %}<option value="{{ c.category.id }}" {{ c.category.id in assigned ? 'selected' }}>{{ '— '|repeat(c.depth) }}{{ c.category.name }}</option>{% endfor %}</select>
+<label>Notes</label><textarea name="notes" rows="2" style="width:100%">{{ item ? item.notes : '' }}</textarea>
+<label><input type="checkbox" name="active" value="1" {{ (not item or item.active) ? 'checked' }}> Active</label>
+<p><button>Save</button></p></form>
+{% if item %}
+<h2>Variants <a class="btn sec" href="/admin/items/{{ item.id }}/variants/new" style="font-size:.9rem">Add variant</a></h2>
+<table><tr><th>SKU</th><th>Name</th><th>Sellable</th><th class="n">Price</th><th>Status</th></tr>
+{% for v in variants|default([]) %}<tr><td><a href="/admin/variants/{{ v.id }}">{{ v.sku }}</a></td><td>{{ v.name }}</td><td>{{ v.sellable ? 'Yes' : 'No' }}</td><td class="n">{{ v.salePrice is null ? '' : v.salePrice|gbp }}</td><td>{{ v.status.value }}</td></tr>
+{% else %}<tr><td colspan="5" class="mut">No variants yet.</td></tr>{% endfor %}</table>
+{% endif %}
+{% endblock %}

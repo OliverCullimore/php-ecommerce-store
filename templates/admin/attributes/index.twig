@@ -1,0 +1,21 @@
+{% extends 'admin/layout.twig' %}
+{% block body %}
+<h1>Attributes</h1>
+<p class="mut">Option dimensions like Colour or Diameter. Tick "storefront filter" to let customers filter category pages by it.</p>
+{% for a in attributes %}
+<div class="card">
+<form method="post" action="/admin/attributes/{{ a.id }}" class="row">{{ csrf_field() }}
+<div><label>Name</label><input name="name" value="{{ a.name }}"></div>
+<div><label>Sort</label><input name="sort_order" type="number" value="{{ a.sort_order }}" size="4" style="width:5rem"></div>
+<label><input type="checkbox" name="display_on_storefront" value="1" {{ a.display_on_storefront ? 'checked' }}> storefront filter</label>
+<button class="sec">Save</button></form>
+<p>{% for v in a.values %}<form method="post" action="/admin/attribute-values/{{ v.id }}/delete" class="inline">{{ csrf_field() }}<span class="badge">{{ v.value }} <button class="danger" style="padding:0 .3rem;border:0" title="Remove">&times;</button></span></form> {% else %}<span class="mut">No values yet.</span>{% endfor %}</p>
+<form method="post" action="/admin/attributes/{{ a.id }}/values" class="row">{{ csrf_field() }}<input name="value" placeholder="New value" required><button class="sec">Add value</button></form>
+<form method="post" action="/admin/attributes/{{ a.id }}/delete" style="margin-top:.5rem">{{ csrf_field() }}<button class="danger">Delete attribute</button></form>
+</div>
+{% endfor %}
+<h2>Add attribute</h2>
+<form method="post" action="/admin/attributes" class="card row">{{ csrf_field() }}
+<div><label>Name</label><input name="name" required></div><div><label>Sort</label><input name="sort_order" type="number" value="0" style="width:5rem"></div>
+<label><input type="checkbox" name="display_on_storefront" value="1"> storefront filter</label><button>Add</button></form>
+{% endblock %}

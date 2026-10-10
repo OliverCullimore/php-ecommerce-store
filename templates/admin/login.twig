@@ -1,0 +1,9 @@
+{% extends 'admin/layout.twig' %}
+{% block title %}Sign in{% endblock %}
+{% block body %}
+<h1>Admin sign in</h1>
+<form method="post" class="card" style="max-width:380px">{{ csrf_field() }}
+<label>Email</label><input type="email" name="email" required autofocus style="width:100%">
+<label>Password</label><input type="password" name="password" required style="width:100%">
+<p><button>Sign in</button></p></form>
+{% endblock %}

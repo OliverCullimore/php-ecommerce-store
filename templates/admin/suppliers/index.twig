@@ -1,0 +1,9 @@
+{% extends 'admin/layout.twig' %}
+{% block body %}
+<h1>Suppliers</h1>
+{% for s in suppliers %}<form method="post" action="/admin/suppliers/{{ s.id }}" class="card row">{{ csrf_field() }}
+<div><label>Name</label><input name="name" value="{{ s.name }}" required></div><div style="flex:1"><label>Contact</label><input name="contact_info" value="{{ s.contactInfo }}" style="width:100%"></div><button class="sec">Save</button></form>
+{% else %}<p class="mut">No suppliers yet.</p>{% endfor %}
+<h2>Add supplier</h2>
+<form method="post" action="/admin/suppliers" class="card row">{{ csrf_field() }}<div><label>Name</label><input name="name" required></div><div style="flex:1"><label>Contact</label><input name="contact_info" style="width:100%"></div><button>Add</button></form>
+{% endblock %}

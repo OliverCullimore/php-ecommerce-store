@@ -1,0 +1,18 @@
+# IDE
+.idea/
+.vscode/
+coverage/
+# System
+.DS_STORE
+# Logs
+/var/*
+!/var/.gitkeep
+# Cache
+.phpunit.cache/
+.php-cs-fixer.cache
+.phpunit.result.cache
+# Composer
+composer.phar
+vendor/
+# Environment
+.env

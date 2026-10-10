@@ -1,0 +1,11 @@
+{% extends 'storefront/single.twig' %}
+{% block title %}Delivery details{% endblock %}
+{% block content %}
+<h1>Delivery details</h1>
+<p class="mut">{{ email }}</p>
+<form method="post" action="/checkout/pay">{{ csrf_field() }}
+<label>Full name</label><input name="name" value="{{ customer ? customer.name : '' }}" required style="width:100%">
+<label>Phone (optional)</label><input name="phone" value="{{ customer ? customer.phone : '' }}" style="width:100%">
+<label>Delivery address</label><textarea name="address" rows="4" required style="width:100%">{{ customer ? customer.address : '' }}</textarea>
+<p><button>Continue to payment</button></p></form>
+{% endblock %}

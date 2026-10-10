@@ -1,0 +1,11 @@
+{% extends 'storefront/layout.twig' %}
+{% block title %}{{ category ? category.name : 'Products' }}{% endblock %}
+{% block body %}
+{% if breadcrumb %}<p class="crumbs"><a href="/">All</a>{% for c in breadcrumb %} / <a href="/category/{{ c.slug }}">{{ c.name }}</a>{% endfor %}</p>{% endif %}
+<h1>{{ category ? category.name : 'All products' }}</h1>
+{% if filters %}<form method="get" class="filters">{% for f in filters %}<select name="f[{{ f.id }}]" onchange="this.form.submit()"><option value="0">{{ f.name }}: any</option>{% for v in f.values %}<option value="{{ v.id }}" {{ active_filters[f.id]|default(0) == v.id ? 'selected' }}>{{ v.value }}</option>{% endfor %}</select>{% endfor %}<noscript><button>Filter</button></noscript></form>{% endif %}
+<div class="grid">
+{% for i in items %}<a class="tile" href="/product/{{ i.id }}"><strong>{{ i.name }}</strong><div class="price">from {{ i.price_from|gbp }}</div></a>
+{% else %}<p class="mut">Nothing here yet.</p>{% endfor %}
+</div>
+{% endblock %}

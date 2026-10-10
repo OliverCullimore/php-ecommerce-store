@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="csrf" content="{{ csrf }}">
+<title>{% block title %}Admin{% endblock %} · {{ shop_name }}</title>
+<style>
+:root{--bg:#f6f6f4;--fg:#1d1d1b;--mut:#6b6b66;--line:#dcdcd6;--acc:#1f5f4a;--bad:#a6321c;--ok:#1f6f3f}
+*{box-sizing:border-box}body{margin:0;font:15px/1.45 system-ui,sans-serif;background:var(--bg);color:var(--fg)}
+nav{background:#1d1d1b;display:flex;flex-wrap:wrap;gap:.25rem 1rem;padding:.6rem 1rem;align-items:center}
+nav a{color:#e8e8e2;text-decoration:none}nav a:hover{text-decoration:underline}nav .sp{flex:1}
+nav button{background:none;border:0;color:#e8e8e2;cursor:pointer;font:inherit}
+main{max-width:1100px;margin:1.2rem auto;padding:0 1rem}h1{margin:.2rem 0 1rem}h2{margin-top:1.8rem}
+table{width:100%;border-collapse:collapse;background:#fff}th,td{padding:.45rem .6rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-size:.8rem;text-transform:uppercase;letter-spacing:.04em;color:var(--mut)}td.n,th.n{text-align:right}
+form.inline{display:inline}label{display:block;font-size:.85rem;color:var(--mut);margin:.5rem 0 .15rem}
+input,select,textarea{font:inherit;padding:.35rem .5rem;border:1px solid var(--line);border-radius:4px;background:#fff;max-width:100%}
+input[type=checkbox]{width:auto}button,.btn{font:inherit;padding:.35rem .8rem;border:1px solid var(--acc);background:var(--acc);color:#fff;border-radius:4px;cursor:pointer;text-decoration:none;display:inline-block}
+button.sec,.btn.sec{background:#fff;color:var(--acc)}button.danger{background:#fff;color:var(--bad);border-color:var(--bad)}
+.card{background:#fff;border:1px solid var(--line);border-radius:6px;padding:1rem;margin:.8rem 0}.row{display:flex;flex-wrap:wrap;gap:.8rem;align-items:flex-end}
+.flash{padding:.6rem .9rem;border-radius:4px;margin-bottom:.8rem}.flash.success{background:#e1f2e6;color:var(--ok)}.flash.error{background:#f8e3de;color:var(--bad)}
+.badge{display:inline-block;padding:.05rem .5rem;border-radius:99px;background:#e9e9e3;font-size:.8rem}.badge.low{background:#f8e3de;color:var(--bad)}.mut{color:var(--mut)}
+ul.tree,ul.tree ul{list-style:none;margin:0;padding-left:1.4rem}ul.tree>li,ul.tree li{margin:.3rem 0}.cat{background:#fff;border:1px solid var(--line);border-radius:4px;padding:.4rem .6rem;display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
+.handle{cursor:grab;color:var(--mut)}li.dragging{opacity:.4}
+</style>
+</head>
+<body>
+{% if admin_email %}
+<nav>
+<a href="/admin"><strong>{{ shop_name }}</strong></a>
+<a href="/admin/orders">Orders</a><a href="/admin/manufacturing">Manufacturing</a><a href="/admin/stock">Stock</a>
+<a href="/admin/purchase-orders">Purchasing</a><a href="/admin/items">Items</a><a href="/admin/categories">Categories</a>
+<a href="/admin/attributes">Attributes</a><a href="/admin/resources">Resources</a><a href="/admin/suppliers">Suppliers</a>
+<span class="sp"></span><a href="/" target="_blank">Storefront</a>
+<form method="post" action="/admin/logout" class="inline">{{ csrf_field() }}<button>Sign out</button></form>
+</nav>
+{% endif %}
+<main>
+{% for f in flash %}<div class="flash {{ f.type }}">{{ f.text }}</div>{% endfor %}
+{% block body %}{% endblock %}
+</main>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{% extends 'admin/layout.twig' %}
+{% block body %}
+<h1>New purchase order</h1>
+<form method="post" action="/admin/purchase-orders" class="card">{{ csrf_field() }}
+<input type="hidden" name="variant_id" value="{{ variant_id }}">
+<label>Supplier{% if selected_supplier %} <span class="mut">(default for this variant pre-selected)</span>{% endif %}</label>
+<select name="supplier_id" required><option value="">Choose…</option>{% for s in suppliers %}<option value="{{ s.id }}" {{ selected_supplier == s.id ? 'selected' }}>{{ s.name }}</option>{% endfor %}</select>
+<label>Notes</label><input name="notes" style="width:100%"><p><button>Create</button></p></form>
+{% endblock %}

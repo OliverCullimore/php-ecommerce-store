@@ -1,0 +1,8 @@
+{% extends 'admin/layout.twig' %}
+{% block body %}
+<h1>Stock</h1>
+<table><tr><th>Item</th><th>SKU</th><th class="n">On hand</th><th class="n">Reorder at</th><th></th></tr>
+{% for r in rows %}<tr><td><a href="/admin/variants/{{ r.id }}">{{ r.item_name }} / {{ r.name }}</a></td><td>{{ r.sku }}</td>
+<td class="n">{{ r.balance|qty }} {{ r.unit }} {% if r.low %}<span class="badge low">low</span>{% endif %}</td><td class="n">{{ r.reorder_threshold|qty }}</td><td class="n"><a href="/admin/stock/{{ r.id }}">Ledger</a></td></tr>
+{% else %}<tr><td colspan="5" class="mut">No variants yet.</td></tr>{% endfor %}</table>
+{% endblock %}

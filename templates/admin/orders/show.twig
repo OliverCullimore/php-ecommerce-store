@@ -1,0 +1,36 @@
+{% extends 'admin/layout.twig' %}
+{% block body %}
+{% set oid = order.id %}
+<h1>Order {{ oid }} <span class="badge">{{ order.status.value|replace({'_':' '}) }}</span></h1>
+<p class="mut">{{ customer.name }} · {{ customer.email }} · {{ order.channel.value }} · {{ order.orderDate }}{% if order.invoiceIssuedAt %} · invoice issued {{ order.invoiceIssuedAt }}{% endif %}
+{% if order.isPaid %} · <a href="/admin/orders/{{ oid }}/invoice.pdf" target="_blank">Invoice PDF</a>{% endif %}</p>
+{% if customer.address %}<p style="white-space:pre-line">{{ customer.address }}</p>{% endif %}
+
+<table><tr><th>Item</th><th class="n">Qty</th><th class="n">Unit</th><th class="n">Line</th><th class="n">Unit cost</th><th>Status</th><th></th></tr>
+{% for l in lines %}<tr><td>{{ l.label }} <span class="mut">{{ l.sku }}</span></td><td class="n">{{ l.quantity|qty }}</td><td class="n">{{ l.unit_price|gbp }}</td><td class="n">{{ l.line_pence|money }}</td><td class="n">{{ l.cost_price is null ? '' : l.cost_price|gbp }}</td><td>{{ l.line_status }}</td>
+<td class="n">
+{% if order.status.value == 'draft' %}<form method="post" action="/admin/orders/{{ oid }}/lines/{{ l.id }}/delete" class="inline">{{ csrf_field() }}<button class="danger">Remove</button></form>{% endif %}
+{% if l.can_despatch %}<form method="post" action="/admin/orders/{{ oid }}/lines/{{ l.id }}/despatch" class="inline">{{ csrf_field() }}<button>Despatch</button></form>{% elseif order.isPaid and l.line_status == 'pending' %}<span class="badge low">no stock</span>{% endif %}
+{% if order.isPaid and l.line_status == 'pending' %}<form method="post" action="/admin/orders/{{ oid }}/lines/{{ l.id }}/cancel" class="inline" onsubmit="return confirm('Cancel this line? This does not refund.')">{{ csrf_field() }}<button class="danger">Cancel</button></form>{% endif %}
+{% if l.line_status == 'despatched' %}<form method="post" action="/admin/orders/{{ oid }}/lines/{{ l.id }}/return" class="inline" onsubmit="return confirm('Return this line to stock? This does not refund.')">{{ csrf_field() }}<button class="sec">Return</button></form>{% endif %}
+</td></tr>
+{% else %}<tr><td colspan="7" class="mut">No lines.</td></tr>{% endfor %}
+<tr><th colspan="3" class="n">Total (excluding cancelled)</th><th class="n">{{ total_pence|money }}</th><th colspan="3"></th></tr></table>
+
+{% if order.status.value == 'draft' %}
+<form method="post" action="/admin/orders/{{ oid }}/lines" class="card row">{{ csrf_field() }}
+<div><label>Add line</label><select name="variant_id" required><option value="">Choose…</option>{% for o in all_variant_options %}<option value="{{ o.id }}">{{ o.label }} ({{ o.sku }}){{ o.sale_price ? ' · ' ~ (o.sale_price|gbp) : '' }}</option>{% endfor %}</select></div>
+<div><label>Qty</label><input name="quantity" type="number" step="any" min="0.0001" value="1" style="width:6rem"></div>
+<div><label>Unit price (blank = list)</label><input name="unit_price" type="number" step="0.01" min="0" style="width:8rem"></div><button>Add</button></form>
+{% endif %}
+{% if order.status.value in ['draft','payment_pending'] and lines %}
+<form method="post" action="/admin/orders/{{ oid }}/paid" onsubmit="return confirm('Record a manual payment of {{ total_pence|money }}?')">{{ csrf_field() }}<button>Mark paid ({{ total_pence|money }})</button></form>
+{% endif %}
+
+<h2>Payments</h2>
+<table><tr><th>#</th><th>When</th><th>Gateway</th><th>Reference</th><th>Status</th><th class="n">Amount</th><th></th></tr>
+{% for r in payments %}{% set p = r.p %}<tr><td>{{ p.id }}</td><td>{{ p.createdAt }}</td><td>{{ p.gateway }}</td><td class="mut">{{ p.gatewayReference }}</td><td>{{ p.status.value }}{{ p.isRefund ? ' (refund of #' ~ p.refundedPaymentId ~ ')' : '' }}</td><td class="n">{{ p.amountPence|money }}</td>
+<td class="n">{% if not p.isRefund and p.status.value == 'captured' and r.remaining > 0 %}<form method="post" action="/admin/orders/{{ oid }}/payments/{{ p.id }}/refund" class="inline" onsubmit="return confirm('Issue this refund?')">{{ csrf_field() }}
+<input name="amount" type="number" step="0.01" min="0.01" max="{{ r.remaining / 100 }}" value="{{ r.remaining / 100 }}" style="width:6.5rem"> <button class="danger">Refund</button></form><div class="mut">refundable {{ r.remaining|money }}</div>{% endif %}</td></tr>
+{% else %}<tr><td colspan="7" class="mut">No payments.</td></tr>{% endfor %}</table>
+{% endblock %}

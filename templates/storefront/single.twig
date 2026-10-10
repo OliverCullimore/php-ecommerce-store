@@ -1,0 +1,4 @@
+{% extends 'storefront/layout.twig' %}
+{% block outer %}
+<div class="wrap single"><main>{% for f in flash %}<div class="flash {{ f.type }}">{{ f.text }}</div>{% endfor %}{% block content %}{% endblock %}</main></div>
+{% endblock %}
