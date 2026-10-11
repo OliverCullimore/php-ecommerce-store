@@ -76,7 +76,7 @@ final class ResourceController
             return null;
         }
         if (!$asset && Input::nullableFloat($b, 'hourly_rate') === null) {
-            Flash::error('Labour needs an hourly rate.');
+            Flash::error('Service/labour needs an hourly rate.');
 
             return null;
         }

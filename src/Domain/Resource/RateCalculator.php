@@ -10,7 +10,7 @@ final class RateCalculator
 {
     public static function perHour(ResourceType $type, ?float $purchaseCost, ?float $lifetimeHours, ?float $hourlyRate): float
     {
-        if ($type === ResourceType::Labour) {
+        if ($type === ResourceType::Service || $type === ResourceType::Labour) {
             return (float) $hourlyRate;
         }
         if ($purchaseCost === null || $lifetimeHours === null || $lifetimeHours <= 0) {

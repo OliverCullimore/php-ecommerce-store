@@ -1,7 +1,7 @@
 {% extends 'admin/layout.twig' %}
 {% block body %}
 <h1>Resources</h1>
-<p class="mut">Capital assets (depreciated per hour) and labour. Not stock: they don't deplete.</p>
+<p class="mut">Capital assets (depreciated per hour), service and labour. Not stock: they don't deplete.</p>
 <table><tr><th>Name</th><th>Type</th><th>Status</th><th class="n">Rate / hour</th><th></th></tr>
 {% for r in resources %}<tr><td>{{ r.name }}</td><td>{{ r.type.value }}</td><td>{{ r.status.value }}</td><td class="n">{{ r.ratePerHour|gbp }}</td><td class="n"><a href="/admin/resources/{{ r.id }}">Edit</a></td></tr>
 {% else %}<tr><td colspan="5" class="mut">None yet.</td></tr>{% endfor %}</table>
@@ -9,13 +9,13 @@
 <form method="post" action="{{ resource ? '/admin/resources/' ~ resource.id : '/admin/resources' }}" class="card">{{ csrf_field() }}
 <div class="row">
 <div><label>Name</label><input name="name" value="{{ resource ? resource.name : '' }}" required></div>
-<div><label>Type</label><select name="type"><option value="asset" {{ resource and resource.type.value == 'asset' ? 'selected' }}>asset</option><option value="labour" {{ resource and resource.type.value == 'labour' ? 'selected' }}>labour</option></select></div>
+<div><label>Type</label><select name="type"><option value="asset" {{ resource and resource.type.value == 'asset' ? 'selected' }}>asset</option><option value="service" {{ resource and resource.type.value == 'service' ? 'selected' }}>service</option><option value="labour" {{ resource and resource.type.value == 'labour' ? 'selected' }}>labour</option></select></div>
 <div><label>Status</label><select name="status">{% for s in ['on_order','active','retired'] %}<option value="{{ s }}" {{ (resource ? resource.status.value : 'active') == s ? 'selected' }}>{{ s }}</option>{% endfor %}</select></div>
 </div>
 <div class="row">
 <div><label>Purchase cost (asset)</label><input name="purchase_cost" type="number" step="0.01" value="{{ resource ? resource.purchaseCost : '' }}"></div>
 <div><label>Expected lifetime hours (asset)</label><input name="expected_lifetime_hours" type="number" step="any" value="{{ resource ? resource.expectedLifetimeHours : '' }}"></div>
-<div><label>Hourly rate (labour)</label><input name="hourly_rate" type="number" step="0.01" value="{{ resource ? resource.hourlyRate : '' }}"></div>
+<div><label>Hourly rate (service/labour)</label><input name="hourly_rate" type="number" step="0.01" value="{{ resource ? resource.hourlyRate : '' }}"></div>
 </div>
 <label>Notes</label><input name="notes" value="{{ resource ? resource.notes : '' }}" style="width:100%">
 <p><button>Save</button></p></form>
