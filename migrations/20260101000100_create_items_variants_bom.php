@@ -19,7 +19,7 @@ final class CreateItemsVariantsBom extends AbstractMigration
             ->addColumn('item_id', 'integer', ['signed' => false])
             ->addColumn('sku', 'string', ['limit' => 64])
             ->addColumn('name', 'string', ['limit' => 190])
-            ->addColumn('unit', 'string', ['limit' => 16, 'default' => 'each'])
+            ->addColumn('unit', 'string', ['limit' => 16, 'default' => 'unit'])
             ->addColumn('reorder_threshold', 'decimal', ['precision' => 12, 'scale' => 4, 'default' => 0])
             ->addColumn('sellable', 'boolean', ['default' => false])
             ->addColumn('sale_price', 'decimal', ['precision' => 10, 'scale' => 2, 'null' => true])

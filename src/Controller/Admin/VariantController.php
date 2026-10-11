@@ -81,7 +81,7 @@ final class VariantController
             $this->variants->update($id, [
                 'sku' => $sku,
                 'name' => Input::str($b, 'name'),
-                'unit' => Input::str($b, 'unit', 'each') ?: 'each',
+                'unit' => Input::str($b, 'unit', 'unit') ?: 'unit',
                 'reorder_threshold' => Input::float($b, 'reorder_threshold'),
                 'sellable' => (int) $sellable,
                 'sale_price' => $sellable ? Input::nullableFloat($b, 'sale_price') : null,

@@ -42,7 +42,7 @@ abstract class DatabaseTestCase extends TestCase
     {
         $this->db->insert('items', ['name' => 'Item ' . $sku, 'active' => 1]);
         $itemId = (int) $this->db->lastInsertId();
-        $this->db->insert('item_variants', ['item_id' => $itemId, 'sku' => $sku, 'name' => $sku, 'unit' => 'each', 'sellable' => $price === null ? 0 : 1, 'sale_price' => $price, 'status' => 'active']);
+        $this->db->insert('item_variants', ['item_id' => $itemId, 'sku' => $sku, 'name' => $sku, 'unit' => 'unit', 'sellable' => $price === null ? 0 : 1, 'sale_price' => $price, 'status' => 'active']);
 
         return (int) $this->db->lastInsertId();
     }
