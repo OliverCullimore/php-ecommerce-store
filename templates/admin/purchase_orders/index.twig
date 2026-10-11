@@ -2,6 +2,6 @@
 {% block body %}
 <h1>Purchase orders <a class="btn" href="/admin/purchase-orders/new" style="font-size:.9rem">New</a></h1>
 <table><tr><th>#</th><th>Date</th><th>Supplier</th><th>Status</th><th class="n">Total</th></tr>
-{% for p in orders %}<tr><td><a href="/admin/purchase-orders/{{ p.id }}">PO-{{ p.id }}</a></td><td>{{ p.order_date }}</td><td>{{ p.supplier_name }}</td><td>{{ p.status }}</td><td class="n">{{ p.total|gbp }}</td></tr>
+{% for p in orders %}<tr><td><a href="/admin/purchase-orders/{{ p.id }}">PO-{{ p.id }}</a></td><td>{{ p.order_date|date }}</td><td>{{ p.supplier_name }}</td><td>{{ p.status }}</td><td class="n">{{ p.total|gbp }}</td></tr>
 {% else %}<tr><td colspan="5" class="mut">None yet.</td></tr>{% endfor %}</table>
 {% endblock %}

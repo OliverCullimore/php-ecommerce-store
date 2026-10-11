@@ -3,5 +3,5 @@
 {% block content %}
 <h1>Your orders</h1>
 <table><tr><th>#</th><th>Date</th><th>Status</th></tr>
-{% for o in orders %}<tr><td>{{ o.id }}</td><td>{{ o.order_date }}</td><td>{{ o.status|replace({'_':' '}) }}</td></tr>{% else %}<tr><td colspan="3" class="mut">No orders yet.</td></tr>{% endfor %}</table>
+{% for o in orders %}<tr><td>{{ o.id }}</td><td>{{ o.order_date|datetime }}</td><td>{{ o.status|replace({'_':' '}) }}</td></tr>{% else %}<tr><td colspan="3" class="mut">No orders yet.</td></tr>{% endfor %}</table>
 {% endblock %}

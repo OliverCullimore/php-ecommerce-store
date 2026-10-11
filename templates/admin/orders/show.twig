@@ -2,7 +2,7 @@
 {% block body %}
 {% set oid = order.id %}
 <h1>Order {{ oid }} <span class="badge">{{ order.status.value|replace({'_':' '}) }}</span></h1>
-<p class="mut">{{ customer.name }} · {{ customer.email }} · {{ order.channel.value }} · {{ order.orderDate }}{% if order.invoiceIssuedAt %} · invoice issued {{ order.invoiceIssuedAt }}{% endif %}
+<p class="mut">{{ customer.name }} · {{ customer.email }} · {{ order.channel.value }} · {{ order.orderDate|datetime }}{% if order.invoiceIssuedAt %} · invoice issued {{ order.invoiceIssuedAt|datetime }}{% endif %}
 {% if order.isPaid %} · <a href="/admin/orders/{{ oid }}/invoice.pdf" target="_blank">Invoice PDF</a>{% endif %}</p>
 {% if customer.address %}<p style="white-space:pre-line">{{ customer.address }}</p>{% endif %}
 

@@ -1,7 +1,7 @@
 {% extends 'admin/layout.twig' %}
 {% block body %}
 <h1>PO-{{ po.id }} <span class="badge">{{ po.status.value }}</span></h1>
-<p class="mut">{{ supplier.name }} · {{ po.orderDate }}</p>
+<p class="mut">{{ supplier.name }} · {{ po.orderDate|date }}</p>
 <table><tr><th>Line</th><th class="n">Qty</th><th class="n">Unit cost</th><th class="n">Total</th><th>Received</th><th></th></tr>
 {% for i in items %}<tr><td>{{ i.label }}{% if i.resource_id %} <span class="mut">(asset)</span>{% endif %}</td><td class="n">{{ i.quantity|qty }}</td><td class="n">{{ i.unit_cost|gbp }}</td><td class="n">{{ (i.quantity * i.unit_cost)|gbp }}</td><td>{{ i.received_at ?: '' }}</td>
 <td class="n">{% if po.status.value == 'draft' %}<form method="post" action="/admin/purchase-orders/{{ po.id }}/items/{{ i.id }}/delete" class="inline">{{ csrf_field() }}<button class="danger">Remove</button></form>
