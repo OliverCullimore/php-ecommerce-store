@@ -40,3 +40,7 @@ Marks storefront orders still `draft` after 2 hours as `abandoned`. Manual order
 ## Mirroring
 
 `bitbucket-pipelines.yml` runs the checks on every push and, on `main`, mirrors to GitHub with `git push --mirror`. Set the repository variable `GITHUB_MIRROR_URL` and add an SSH key under Pipelines > SSH keys. A GitHub Actions workflow is a separate, later addition on the GitHub side only.
+
+## Disclaimer
+
+> **Note:** Artificial Intelligence (AI) was used to design, write, and structure this entire project.
